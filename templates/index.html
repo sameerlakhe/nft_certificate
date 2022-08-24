@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+  <html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    .jumbotron {
+      margin-bottom: 0;
+    }
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+
+<div class="jumbotron">
+  <div class="container text-center">
+    <h3>Create NFT certificates that can be authenticated by employers</h3>      
+    
+  </div>
+</div>
+
+
+  
+<div class="container-fluid bg-3 text-center">    
+  
+  <div class="row">
+    <div class="col-sm-3">
+      <button id='connectWallet' onclick="">Connect Wallet</button>
+     
+    </div>
+    
+  </div>
+</div><br>
+
+
+    
+    
+    
+    <!--<button id='connectWallet' onclick="">Connect Wallet</button>-->
+
+    <!--<button id='getBalance' onclick="checkBalance()">Get Balance of Wallet</button>-->
+
+    <p id="walletAddress"></p>
+    <p id="walletBalance"></p>
+
+ 
+    
+
+    </center>
+
+ <div class="jumbotron">
+<div class="container">
+  
+  <form action = "/mint_nft" enctype="multipart/form-data" method="POST"> 
+    <div class="form-group">
+      <label for="usr">Student name:</label>
+      <input type="text" class="form-control" size="50"  name="student_name" value="student_name"/>
+     
+    </div>
+    <div class="form-group">
+      <label for="pwd">Grade:</label>
+      <input type="text" class="form-control" size="50"  name="grade" value="A+"/>
+    </div>
+
+    <div class="form-group">
+      <label for="pwd">Description:</label>
+      <input type="text" class="form-control" size="50"  name="description" value="Fintech course at University of Toronto"/>
+    </div>
+    <div class="form-group">
+      <label for="pwd">Certificate Image:</label>
+     <input type="file" class="form-control" size="50"  name="pic"/>
+    </div>
+
+    <div class="form-group">
+      <label for="pwd">Wallet address:</label>
+      <input type="text" class="form-control" size="50"  id="wallet_address" name="wallet_address" value=""/>
+    </div>
+
+    <div class="form-group">
+      
+      <input type="submit" value="Mint NFT" class="btn btn-danger"  id="mintNFT" onclick=""/>
+    </div>
+
+  </form>
+</div>
+</div>
+
+  
+
+<script type="text/javascript">
+      window.userWalletAddress = null
+      const connectWallet = document.getElementById('connectWallet')
+      const walletAddress = document.getElementById('walletAddress')
+      const wallet_address = document.getElementById('wallet_address')
+      const walletBalance = document.getElementById('walletBalance')
+    
+
+
+      function checkInstalled() {
+        if (typeof window.ethereum == 'undefined') {
+          connectWallet.innerText = 'MetaMask isnt installed, please install it'
+          connectWallet.classList.remove()
+          connectWallet.classList.add()
+          return false
+        }
+        connectWallet.addEventListener('click', connectWalletwithMetaMask)
+      }
+
+      async function connectWalletwithMetaMask() {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+        .catch((e) => {
+        console.error(e.message)
+        return
+        })
+
+        if (!accounts) { return }
+
+        window.userWalletAddress = accounts[0]
+        //walletAddress.innerText = window.userWalletAddress
+        wallet_address.value = window.userWalletAddress
+
+        connectWallet.innerText = 'Sign Out'
+        connectWallet.removeEventListener('click', connectWalletwithMetaMask)
+        setTimeout(() => {
+          connectWallet.addEventListener('click', signOutOfMetaMask)
+        }, 200)
+
+      }
+
+
+      function signOutOfMetaMask() {
+        window.userwalletAddress = null
+        walletAddress.innerText = ''
+        connectWallet.innerText = 'Connect Wallet'
+        wallet_address.value = ''
+
+        connectWallet.removeEventListener('click', signOutOfMetaMask)
+        setTimeout(() => {
+          connectWallet.addEventListener('click', connectWalletwithMetaMask)
+        }, 200  )
+      }
+
+      async function checkBalance() {
+        let balance = await window.ethereum.request({ method: "eth_getBalance",
+        params: [
+          window.userWalletAddress,
+          'latest'
+        ]
+      }).catch((err)=> {
+          console.log(err)
+      })
+
+      console.log(parseFloat((balance) / Math.pow(10,18)))
+
+      walletBalance.innerText = parseFloat((balance) / Math.pow(10,18))
+    }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        checkInstalled()
+      })
+
+
+    </script>
+
+  </body>
+</html>
